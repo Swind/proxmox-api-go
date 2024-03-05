@@ -18,7 +18,7 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.PersistentFlags().BoolP("insecure", "i", false, "TLS insecure mode")
+	RootCmd.PersistentFlags().BoolP("secure", "i", false, "TLS secure mode")
 	RootCmd.PersistentFlags().BoolP("debug", "d", false, "debug mode")
 	RootCmd.PersistentFlags().IntP("timeout", "t", 300, "api task timeout in seconds")
 	RootCmd.PersistentFlags().StringP("file", "f", "", "file to get the config from")
@@ -39,12 +39,12 @@ func NewClient() (c *proxmox.Client) {
 }
 
 func Client(apiUrl, userID, password, otp string, http_headers string) (c *proxmox.Client, err error) {
-	insecure, _ := RootCmd.Flags().GetBool("insecure")
+	secure, _ := RootCmd.Flags().GetBool("secure")
 	timeout, _ := RootCmd.Flags().GetInt("timeout")
 	proxyUrl, _ := RootCmd.Flags().GetString("proxyurl")
 
 	tlsConf := &tls.Config{InsecureSkipVerify: true}
-	if !insecure {
+	if secure {
 		tlsConf = nil
 	}
 	if apiUrl == "" {
