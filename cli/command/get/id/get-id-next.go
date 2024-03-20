@@ -10,14 +10,15 @@ import (
 var id_nextCmd = &cobra.Command{
 	Use:   "next",
 	Short: "Returns the lowest available ID",
-	Args:  cobra.NoArgs,
+	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
+		currentId := cli.ValidateIntIDset(args, "ID")
 		c := cli.NewClient()
-		id, err := c.GetNextID(0)
+		id, err := c.GetNextID(currentId)
 		if err != nil {
 			return
 		}
-		fmt.Fprintf(idCmd.OutOrStdout(), "Getting Next Free ID: %d\n", id)
+		fmt.Fprintf(idCmd.OutOrStdout(), "%d\n", id)
 		return
 	},
 }
