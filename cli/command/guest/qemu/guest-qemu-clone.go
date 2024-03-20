@@ -14,15 +14,19 @@ var qemu_cloneCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
 		vmid := cli.ValidateIntIDset(args, "GuestID")
-		node, _ := cmd.Flags().GetString("node")
 		newid, _ := cmd.Flags().GetInt("newid")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 
 		sourceVmr := proxmox.NewVmRef(vmid)
-		sourceVmr.SetNode(node)
 
 		c := cli.NewClient()
+		err = c.CheckVmRef(sourceVmr)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
 		params := map[string]interface{}{
 			"newid":       newid,
 			"name":        name,
@@ -43,7 +47,6 @@ func init() {
 	qemuCmd.AddCommand(qemu_cloneCmd)
 
 	// node name
-	qemu_cloneCmd.Flags().StringP("node", "", "", "Node name")
 	qemu_cloneCmd.Flags().IntP("newid", "", -1, "New VM ID")
 
 	qemu_cloneCmd.Flags().StringP("name", "", "", "New VM Name")
