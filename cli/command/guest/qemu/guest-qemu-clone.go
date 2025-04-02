@@ -17,6 +17,7 @@ var qemu_cloneCmd = &cobra.Command{
 		newid, _ := cmd.Flags().GetInt("newid")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
+		full, _ := cmd.Flags().GetBool("full")
 
 		sourceVmr := proxmox.NewVmRef(vmid)
 
@@ -31,6 +32,7 @@ var qemu_cloneCmd = &cobra.Command{
 			"newid":       newid,
 			"name":        name,
 			"description": description,
+			"full":        full,
 		}
 		_, err = c.CloneQemuVm(sourceVmr, params)
 		if err == nil {
@@ -51,6 +53,8 @@ func init() {
 
 	qemu_cloneCmd.Flags().StringP("name", "", "", "New VM Name")
 	qemu_cloneCmd.Flags().StringP("description", "", "", "New VM Description")
+
+	qemu_cloneCmd.Flags().BoolP("full", "", true, "Full clone")
 
 	qemu_cloneCmd.MarkFlagRequired("node")
 	qemu_cloneCmd.MarkFlagRequired("newid")
